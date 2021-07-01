@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>技能培训中心</title>
+<script>
+//屏蔽右键菜单 
+document.oncontextmenu=new Function("return false"); 
+document.onselectstart=new Function("return false"); 
+//屏蔽右键菜单
+
+
+window.onload = function(){
+    document.onkeydown = function(event){
+          var event = (event)?event:window.event;//处理IE和FF浏览器的兼容性问题
+            if(event.keyCode == 27){
+                self.location='index.html'; 
+            }
+    };
+}
+</script>
+<script type="text/javascript" src="../js/lufylegend-1.10.1.min.js"></script>
+<script type="text/javascript" src="../js/main.js"></script>
+
+</head>
+<body>
+<div id="mylegend">
+  <div align="center">loading......</div>
+</div>
+</body>
+</html>

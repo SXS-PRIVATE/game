@@ -1,0 +1,139 @@
+<html>
+<head>
+<title>找不同色块的游戏 不限时 总共60关</title>
+<style>
+	body{
+		padding:0;
+		margin:0;
+		width:100%;
+		height:100%;
+		background-color:#f3f3f3;
+		overflow:hidden;
+		display: table;
+	}
+	div{
+		display: table-cell;
+		vertical-align: middle;
+		text-align: center;
+	}
+</style>
+</head>
+<body>
+	<div>
+		<canvas id='canvas'>您的浏览器不支持canvas</canvas>
+	</div>
+</body>
+</html>
+
+<script>
+//屏蔽右键菜单 
+document.oncontextmenu=new Function("return false"); 
+document.onselectstart=new Function("return false"); 
+//屏蔽右键菜单 
+	canvas = document.getElementById('canvas')
+	size = window.innerWidth<window.innerHeight?window.innerWidth:window.innerHeight
+	canvas.width = size
+	canvas.height = size
+	ctx = canvas.getContext('2d')
+	var rank=0,n=2
+	targetX=parseInt(Math.random()*n)
+	targetY=parseInt(Math.random()*n)
+	addRect()
+
+	canvas.onclick = function(e){
+		bcr =canvas.getBoundingClientRect()
+		clickX = e.clientX- bcr.left *(canvas.width / bcr.width)
+		clickY = e.clientY- bcr.top *(canvas.height / bcr.height)
+		if(checkArea(clickX,clickY)){
+			rank++
+			ctx.clearRect(0,0,size,size)
+			if(rank>=60){
+				alert("天才，你已经通关了，得分为"+rank+"分")
+				rank=0
+				n=2
+			}else if(n<8){
+				n++
+			}
+		}else{
+			alert("游戏结束，你的分数为："+rank+"分")
+			ctx.clearRect(0,0,size,size)
+			rank=0
+			n=2
+		}
+		targetX = parseInt(Math.random()*n)
+		targetY = parseInt(Math.random()*n)
+		addRect()
+	}
+
+	//判断点击的位置是否为不同色块所在区域
+	function checkArea(clickX,clickY){
+		beginX = size*targetX/n
+		endX = size*(targetX+1)/n
+		beginY = size*targetY/n
+		endY = size*(targetY+1)/n
+		if(clickX>=beginX&&clickX<=endX&&clickY>=beginY&&clickY<=endY){
+			return true
+		}else{
+			return false
+		}
+	} 
+
+	//向canvas添加多个矩形
+	function addRect(){
+		itemSize = size/n
+		rectSize = itemSize-size*0.06/n
+		rectPadding = size*0.03/n
+		rectRadius = size*0.1/n
+		colorArr = setColor()
+		color = colorArr.color
+		scolor = colorArr.scolor
+		for(var x=0;x<n;x++){
+			for(var y=0;y<n;y++){
+				if(x!=targetX||y!=targetY){
+					drawRect(color,x*itemSize+rectPadding,y*itemSize+rectPadding,rectSize,rectSize,rectRadius)
+				}else{
+					drawRect(scolor,x*itemSize+rectPadding,y*itemSize+rectPadding,rectSize,rectSize,rectRadius)
+				}
+			}
+		}
+	}
+
+	//画圆角矩形，r为圆角半径
+	function drawRect(color,x,y,w,h,r) {
+		ctx.beginPath()
+		ctx.moveTo(x-r,y)
+		ctx.arcTo(x+w,y,x+w,y+h,r)
+		ctx.arcTo(x+w,y+h,x,y+h,r)
+		ctx.arcTo(x,y+h,x,y,r)
+		ctx.arcTo(x,y,x+r,y,r)
+		ctx.fillStyle = color
+		ctx.fill()
+	}
+
+	//颜色配置
+	function setColor(){
+		rgbArr = [ parseInt(Math.random()*100+150), parseInt(Math.random()*250), parseInt(Math.random()*200) ]
+		rgbArr.sort(randomsort);
+		red=rgbArr[0]
+		green=rgbArr[1]
+		blue=rgbArr[2]
+		//设置颜色数字变化范围
+		if(Math.random()>0.5){
+			index = parseInt((100-rank)/5)
+		}else{
+			index = -parseInt((100-rank)/5)
+		}
+		color="rgb("+red+", "+green+", "+blue+")"
+		scolor="rgb("+(red+index)+", "+(green+index)+", "+(blue+index)+")"
+		return{
+			color:color,
+			scolor:scolor
+		}
+	}
+
+	//打乱颜色数组数组
+	function randomsort() {
+        return Math.random()>0.5 ? -1 : 1
+	}		
+
+</script>
